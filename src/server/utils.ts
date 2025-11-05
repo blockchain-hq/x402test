@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ServerConfig } from "./config";
+import { ServerConfig } from "./config.js";
 import { PublicKey } from "@solana/web3.js";
 
 export const logRequests = (
