@@ -163,6 +163,8 @@ export class X402Request {
       return response;
     } catch (err) {
       if (err instanceof X402Error || err instanceof AssertionError) {
+        console.error(chalk.red(`Error executing request: ${err.message}`));
+        console.error(chalk.red(`Stack trace: ${err.stack}`));
         throw err;
       }
       throw new X402Error(`Request failed: ${(err as Error).message}`);

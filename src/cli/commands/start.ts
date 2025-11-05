@@ -44,10 +44,11 @@ export const startCommand = async (options: StartOptions) => {
       config.port = parseInt(options.port);
     }
 
-    spinner.info("Initializing test environment...");
+    spinner.start("Initializing test environment...");
     await getWallet();
 
     await startServer(config);
+    spinner.succeed("Server started successfully");
   } catch (err) {
     console.error(
       chalk.red("Failed to start server:"),
