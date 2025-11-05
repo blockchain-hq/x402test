@@ -173,6 +173,18 @@ export class X402Request {
     res: X402Response<T>
   ): Promise<X402Response<T>> {
     const requirements = parse402Response(res.body);
+
+    if (this.paymentAmount) {
+      const clientMaxAmount = parseFloat(this.paymentAmount) * 10 ** 6;
+      const serverRequiredAmount = parseFloat(requirements.maxAmountRequired);
+
+      if (clientMaxAmount < serverRequiredAmount) {
+        throw new X402Error(
+          `Client max amount ${clientMaxAmount} is less than server required amount ${serverRequiredAmount}`
+        );
+      }
+    }
+
     const wallet = await getWallet();
     const signature = await createPayment(wallet, requirements);
 
