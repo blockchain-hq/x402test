@@ -1,4 +1,8 @@
+#!/usr/bin/env node
+
 import { Command } from "commander";
+import { startCommand } from "./commands/start.js";
+import { initCommand } from "./commands/init.js";
 
 const program = new Command();
 
@@ -12,12 +16,12 @@ program
   .description("Start the x402test server")
   .option("-c, --config <path>", "Config file path", "./x402test.config.js")
   .option("-p, --port <port>", "Server port")
-  .action(async () => {}); // TODO: implement start command
+  .action(startCommand);
 
 program
   .command("init")
   .description("Initialize x402test configuration")
   .option("-f, --force", "Overwrite existing config")
-  .action(async () => {}); // TODO: implement init command
+  .action(initCommand);
 
 program.parse();
