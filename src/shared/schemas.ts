@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const X402_VERSION = 1;
+export const X402_VERSION = 1;
 
 const solanaAddressSchema = z
   .string()
@@ -18,7 +18,7 @@ const uint256StringSchema = z
   .regex(/^\d+$/, "Must be numeric string representing uint256");
 
 export const paymentRequirementsSchema = z.object({
-  schema: z.string(), // schema of the payment protocol
+  scheme: z.string(), // schema of the payment protocol
   network: z.string(),
   maxAmountRequired: uint256StringSchema, // max amount required to pay for resource in smallest unit
   resource: z.url(), // resource url to pay for
