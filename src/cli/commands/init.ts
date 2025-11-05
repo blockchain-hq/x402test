@@ -22,7 +22,7 @@ export const initCommand = async (options: InitOptions) => {
 
   const config = `
 // x402test configuration
-module.exports = {
+export default {
   port: 4402,
   network: 'solana-devnet',
   rpcUrl: 'http://localhost:8899',
