@@ -6,6 +6,7 @@ import {
 import {
   getOrCreateAssociatedTokenAccount,
   createTransferCheckedInstruction,
+  getAccount,
 } from "@solana/spl-token";
 import {
   PaymentPayload,
@@ -26,6 +27,24 @@ export const createPayment = async (
     const recipientPubKey = new PublicKey(requirements.payTo);
     const mintPubKey = new PublicKey(requirements.asset);
 
+    const senderTokenAccount = await getOrCreateAssociatedTokenAccount(
+      connection,
+      wallet.keypair,
+      mintPubKey,
+      wallet.publicKey
+    );
+
+    const accountInfo = await getAccount(
+      connection,
+      senderTokenAccount.address
+    );
+    const balance = accountInfo?.amount;
+    const requiredAmount = BigInt(requirements.maxAmountRequired);
+
+    if (balance < requiredAmount) {
+      throw new PaymentCreationError("Insufficient balance");
+    }
+
     const recipientTokenAccount = await getOrCreateAssociatedTokenAccount(
       connection,
       wallet.keypair,
@@ -34,7 +53,7 @@ export const createPayment = async (
     );
     const amountLamports = BigInt(requirements.maxAmountRequired);
     const transferIx = createTransferCheckedInstruction(
-      wallet.tokenAccount,
+      senderTokenAccount.address,
       mintPubKey,
       recipientTokenAccount.address,
       wallet.publicKey,
@@ -43,9 +62,12 @@ export const createPayment = async (
     );
 
     const transaction = new Transaction().add(transferIx);
-    const signature = await sendAndConfirmTransaction(connection, transaction, [
-      wallet.keypair,
-    ]);
+    const signature = await sendAndConfirmTransaction(
+      connection,
+      transaction,
+      [wallet.keypair],
+      { commitment: "confirmed" }
+    );
     return signature;
   } catch (err) {
     if (err instanceof Error) {

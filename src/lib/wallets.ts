@@ -1,6 +1,8 @@
 import { Keypair, PublicKey } from "@solana/web3.js";
 import { TestWallets } from "solana-test-wallets";
 import { getConnection } from "./connection.js";
+import path from "path";
+import fs from "fs";
 
 export interface TestWallet {
   keypair: Keypair;
@@ -12,12 +14,41 @@ export interface TestWallet {
 
 let walletManager: TestWallets | null = null;
 let usdcMint: PublicKey | null = null;
+let isInitialized = false;
+
+const WALLET_FILE = path.join(process.cwd(), ".x402test-wallets.json");
 
 const initializeWalletManager = async () => {
-  if (walletManager) return walletManager;
+  if (isInitialized && walletManager) return walletManager;
+
+  // first check if the wallet file exists
+  if (fs.existsSync(WALLET_FILE)) {
+    try {
+      walletManager = await TestWallets.loadFromFile(WALLET_FILE);
+      const firstWallet = walletManager.getAll()[0];
+      if (firstWallet) {
+        const tokenAccountAddress = await firstWallet.getTokenAccountAddress(
+          "USDC"
+        );
+        const connection = getConnection();
+        const tokenAccountInfo = await connection.getAccountInfo(
+          tokenAccountAddress
+        );
+
+        if (tokenAccountInfo) {
+          usdcMint = new PublicKey(tokenAccountInfo.data.slice(0, 32));
+        }
+      }
+
+      isInitialized = true;
+      return walletManager;
+    } catch (err) {
+      console.warn("Error loading wallet file", err);
+    }
+  }
 
   walletManager = await TestWallets.create({
-    count: 1,
+    count: 10,
     network: "localnet",
     fundSOL: 10,
     fundTokens: { USDC: 1000 },
@@ -33,22 +64,19 @@ const initializeWalletManager = async () => {
     usdcMint = new PublicKey(tokenAccountInfo.data.slice(0, 32));
   }
 
+  await walletManager.saveToFile(WALLET_FILE);
+
+  isInitialized = true;
   return walletManager;
 };
 
-export const getWallet = async (
-  usdcAmount: number = 1000
-): Promise<TestWallet> => {
-  const manager = await initializeWalletManager();
-  const newManager = await TestWallets.create({
-    count: 1,
-    network: "localnet",
-    fundSOL: 10,
-    fundTokens: { USDC: usdcAmount },
-    label: "x402test",
-  });
+export const getWallet = async (): Promise<TestWallet> => {
+  await initializeWalletManager();
+  if (!walletManager || !usdcMint) {
+    throw new Error("Wallet manager not initialized");
+  }
 
-  const wallet = newManager.next();
+  const wallet = walletManager.next();
   const tokenAccountAddress = await wallet.getTokenAccountAddress("USDC");
   if (!usdcMint) {
     throw new Error("USDC mint not found");
@@ -59,7 +87,7 @@ export const getWallet = async (
     publicKey: wallet.publicKey,
     tokenAccount: tokenAccountAddress,
     usdcMint: usdcMint,
-    balance: usdcAmount,
+    balance: (await wallet.getTokenBalance("USDC")) || 0,
   };
 };
 
@@ -76,4 +104,9 @@ export const resetWallets = async () => {
   }
   walletManager = null;
   usdcMint = null;
+  isInitialized = false;
+
+  if (fs.existsSync(WALLET_FILE)) {
+    fs.unlinkSync(WALLET_FILE);
+  }
 };

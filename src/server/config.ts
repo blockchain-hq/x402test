@@ -1,6 +1,7 @@
 import { Request } from "express";
 import path from "path";
 import fs from "fs";
+import { pathToFileURL } from "url";
 
 export interface RouteConfig {
   price: string;
@@ -24,10 +25,11 @@ export const loadConfig = async (configPath: string): Promise<ServerConfig> => {
   }
 
   try {
-    delete require.cache[require.resolve(absPath)]; // clear cache
-
-    const config = await import(absPath);
-    return config.default || config;
+    const fileUrl = pathToFileURL(absPath).href;
+    const moduleUrl = `${fileUrl}?t=${Date.now()}`; // date to bust cache
+    const module = await import(moduleUrl);
+    const config = module.default || module;
+    return config;
   } catch (err) {
     throw new Error(
       `Failed to load config: ${

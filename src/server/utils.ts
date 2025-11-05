@@ -27,7 +27,9 @@ export const printServerInfo = (config: ServerConfig, recipient: PublicKey) => {
     console.log(`     Description: ${routeConfig.description || "N/A"}`);
   }
 
-  console.log("\n Ready to accept payments!\n");
+  console.log(
+    `\n Ready to accept payments at http://localhost:${config.port}\n`
+  );
 };
 
 export const toAtomicUnits = (price: string): string => {

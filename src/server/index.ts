@@ -3,8 +3,11 @@ import { ServerConfig } from "./config.js";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { logRequests, printServerInfo } from "./utils.js";
 import { createRouteHandler } from "./route-handler.js";
+import { getWallet } from "../lib/wallets.js";
 
 export const startServer = async (config: ServerConfig) => {
+  await getWallet();
+
   const app = express();
   const connection = new Connection(config.rpcUrl || "http://localhost:8899");
   const recipient = new PublicKey(config.recipient);
