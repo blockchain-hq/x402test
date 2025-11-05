@@ -2,7 +2,11 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { Request, Response } from "express";
 import { RouteConfig, ServerConfig } from "./config";
 import { parse402PaymentHeader } from "../lib/parser";
-import { PaymentPayload, VerificationResult } from "../shared/schemas";
+import {
+  PaymentPayload,
+  PaymentRequiredResponse,
+  X402_VERSION,
+} from "../shared/schemas";
 import { verifyPayment } from "../lib/verify";
 import { toAtomicUnits } from "./utils";
 import { getUsdcMint } from "../lib/wallets";
@@ -17,7 +21,13 @@ export const createRouteHandler = (
     const xPaymentHeader = req.headers["x-payment"] as string;
 
     if (!xPaymentHeader) {
-      // TODO: send payment required response
+      return sendPaymentRequiredResponse(
+        req,
+        res,
+        routeConfig,
+        recipient,
+        serverConfig
+      );
     }
 
     let payment: PaymentPayload;
@@ -37,7 +47,14 @@ export const createRouteHandler = (
 
     if (!verification.isValid) {
       console.error("Payment verification failed", verification.invalidReason);
-      // TODO: send payment verification failed response
+      return sendPaymentRequiredResponse(
+        req,
+        res,
+        routeConfig,
+        recipient,
+        serverConfig,
+        verification.invalidReason || "Unknown verification error"
+      );
     }
 
     const verificationResultBuffer = Buffer.from(
@@ -58,4 +75,32 @@ export const createRouteHandler = (
 
     res.status(routeConfig.status || 200).json(mockData);
   };
+};
+
+export const sendPaymentRequiredResponse = (
+  req: Request,
+  res: Response,
+  routeConfig: RouteConfig,
+  recipient: PublicKey,
+  config: ServerConfig,
+  error?: string
+) => {
+  const paymentRequiredResponse: PaymentRequiredResponse = {
+    x402Version: X402_VERSION,
+    accepts: [
+      {
+        scheme: "solanaTransferChecked",
+        network: config.network || "solana-localnet",
+        maxAmountRequired: toAtomicUnits(routeConfig.price),
+        resource: `http://localhost:${config.port}${req.path}`,
+        description: routeConfig.description,
+        mimeType: "application/json",
+        payTo: recipient.toBase58(),
+        asset: getUsdcMint().toBase58(),
+        maxTimeoutSeconds: 30,
+      },
+    ],
+    error: error || null,
+  };
+  res.status(402).json(paymentRequiredResponse);
 };
