@@ -17,7 +17,7 @@ export interface ServerConfig {
   routes: Record<string, RouteConfig>;
 }
 
-export const loadConfig = (configPath: string): ServerConfig => {
+export const loadConfig = async (configPath: string): Promise<ServerConfig> => {
   const absPath = path.resolve(process.cwd(), configPath);
   if (!fs.existsSync(absPath)) {
     throw new Error(`Config file not found: ${configPath}`);
@@ -26,7 +26,7 @@ export const loadConfig = (configPath: string): ServerConfig => {
   try {
     delete require.cache[require.resolve(absPath)]; // clear cache
 
-    const config = require(absPath);
+    const config = await import(absPath);
     return config.default || config;
   } catch (err) {
     throw new Error(

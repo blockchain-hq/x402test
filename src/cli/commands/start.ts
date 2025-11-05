@@ -17,7 +17,7 @@ export const startCommand = async (options: StartOptions) => {
 
     let config: ServerConfig;
     try {
-      config = loadConfig(options.config || "./x402test.config.js");
+      config = await loadConfig(options.config || "./x402test.config.js");
       spinner.succeed(
         `Loaded config from ${options.config || "./x402test.config.js"}`
       );
