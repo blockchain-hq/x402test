@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { ServerConfig } from "./config";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { logRequests, printServerInfo } from "./utils";
+import { createRouteHandler } from "./route-handler";
 
 export const startServer = async (config: ServerConfig) => {
   const app = express();
@@ -13,7 +14,17 @@ export const startServer = async (config: ServerConfig) => {
 
   // set routes
   for (const [path, routeConfig] of Object.entries(config.routes)) {
-    // TODO: add route handler
+    const handler = createRouteHandler(
+      routeConfig,
+      recipient,
+      connection,
+      config
+    );
+
+    app.get(path, handler);
+    app.post(path, handler);
+    app.put(path, handler);
+    app.delete(path, handler);
   }
 
   app.use((req: Request, res: Response) => {

@@ -29,3 +29,7 @@ export const printServerInfo = (config: ServerConfig, recipient: PublicKey) => {
 
   console.log("\n Ready to accept payments!\n");
 };
+
+export const toAtomicUnits = (price: string): string => {
+  return (parseFloat(price) * 1e6).toString();
+};
