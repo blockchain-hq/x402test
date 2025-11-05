@@ -1,5 +1,5 @@
 import { PublicKey } from "@solana/web3.js";
-import { getConnection } from "./connection";
+import { getConnection } from "./connection.js";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
 export interface VerificationResult {

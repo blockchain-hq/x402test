@@ -12,10 +12,10 @@ import {
   paymentPayloadSchema,
   PaymentRequirements,
   X402_VERSION,
-} from "../shared/schemas";
-import { getConnection } from "./connection";
-import { TestWallet } from "./wallets";
-import { PaymentCreationError } from "./errors";
+} from "../shared/schemas.js";
+import { getConnection } from "./connection.js";
+import { TestWallet } from "./wallets.js";
+import { PaymentCreationError } from "./errors.js";
 
 export const createPayment = async (
   wallet: TestWallet,

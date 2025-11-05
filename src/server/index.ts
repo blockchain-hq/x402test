@@ -1,8 +1,8 @@
 import express, { Request, Response } from "express";
-import { ServerConfig } from "./config";
+import { ServerConfig } from "./config.js";
 import { Connection, PublicKey } from "@solana/web3.js";
-import { logRequests, printServerInfo } from "./utils";
-import { createRouteHandler } from "./route-handler";
+import { logRequests, printServerInfo } from "./utils.js";
+import { createRouteHandler } from "./route-handler.js";
 
 export const startServer = async (config: ServerConfig) => {
   const app = express();

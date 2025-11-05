@@ -1,6 +1,6 @@
 import { Keypair, PublicKey } from "@solana/web3.js";
 import { TestWallets } from "solana-test-wallets";
-import { getConnection } from "./connection";
+import { getConnection } from "./connection.js";
 
 export interface TestWallet {
   keypair: Keypair;

@@ -5,8 +5,8 @@ import {
   PaymentRequirements,
   PaymentPayload,
   X402_VERSION,
-} from "../shared/schemas";
-import { X402ParseError } from "./errors";
+} from "../shared/schemas.js";
+import { X402ParseError } from "./errors.js";
 
 export const parse402Response = (body: unknown): PaymentRequirements => {
   try {

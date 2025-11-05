@@ -1,15 +1,15 @@
 import { Connection, PublicKey } from "@solana/web3.js";
 import { Request, Response } from "express";
-import { RouteConfig, ServerConfig } from "./config";
-import { parse402PaymentHeader } from "../lib/parser";
+import { RouteConfig, ServerConfig } from "./config.js";
+import { parse402PaymentHeader } from "../lib/parser.js";
 import {
   PaymentPayload,
   PaymentRequiredResponse,
   X402_VERSION,
-} from "../shared/schemas";
-import { verifyPayment } from "../lib/verify";
-import { toAtomicUnits } from "./utils";
-import { getUsdcMint } from "../lib/wallets";
+} from "../shared/schemas.js";
+import { verifyPayment } from "../lib/verify.js";
+import { toAtomicUnits } from "./utils.js";
+import { getUsdcMint } from "../lib/wallets.js";
 
 export const createRouteHandler = (
   routeConfig: RouteConfig,
