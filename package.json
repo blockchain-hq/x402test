@@ -1,6 +1,6 @@
 {
   "name": "x402test",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "type": "module",
   "description": "Testing framework for x402 payment flows on Solana",
   "main": "dist/lib/index.js",
