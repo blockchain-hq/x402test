@@ -21,9 +21,19 @@
     "solana",
     "testing",
     "payments",
-    "web3"
+    "web3",
+    "blockchain",
+    "micropayments",
+    "ai-agents",
+    "usdc",
+    "payment-protocol"
   ],
-  "author": "Nirav Joshi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/blockchain-hq/x402test"
+  },
+  "homepage": "https://github.com/blockchain-hq/x402test#readme",
+  "author": "blockchainhq",
   "license": "MIT",
   "dependencies": {
     "@solana/web3.js": "^1.87.0",
@@ -42,6 +52,7 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ]
 }
