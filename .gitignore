@@ -1,6 +1,7 @@
 # x402test config file
 .x402test-wallets.json
 x402test.config.js
+.x402test-signatures.json
 
 # Logs
 logs

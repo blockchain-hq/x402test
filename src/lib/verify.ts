@@ -1,6 +1,7 @@
 import { PublicKey } from "@solana/web3.js";
 import { getConnection } from "./connection.js";
 import { getAccount, TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { isSignatureUsed, markSignatureUsed } from "./replay-protection.js";
 
 export interface VerificationResult {
   isValid: boolean;
@@ -19,6 +20,17 @@ export const verifyPayment = async (
 ): Promise<VerificationResult> => {
   try {
     const connection = getConnection();
+
+    // check for replay attack
+    if (isSignatureUsed(signature)) {
+      console.log("Replay attack detected");
+
+      return {
+        isValid: false,
+        invalidReason: "Payment already processed",
+      };
+    }
+
     const tx = await connection.getTransaction(signature, {
       commitment: "confirmed",
       maxSupportedTransactionVersion: 0,
@@ -84,6 +96,8 @@ export const verifyPayment = async (
           `got ${transfer.mint}`,
       };
     }
+
+    markSignatureUsed(signature, "payment-verification", transfer.amount);
 
     return {
       isValid: true,
