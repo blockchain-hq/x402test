@@ -249,7 +249,8 @@ export class X402Request {
           new PublicKey(res.payment.to),
           BigInt(res.payment.amount),
           wallet.usdcMint,
-          this.cluster
+          this.cluster,
+          { skipReplayProtection: true }
         );
 
         if (!verification.isValid) {

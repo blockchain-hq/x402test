@@ -18,13 +18,14 @@ export const verifyPayment = async (
   expectedRecipient: PublicKey,
   expectedAmount: bigint,
   expectedMint: PublicKey,
-  cluster: Cluster
+  cluster: Cluster,
+  { skipReplayProtection = true }: { skipReplayProtection?: boolean } = {}
 ): Promise<VerificationResult> => {
   try {
     const connection = getConnection();
 
     // check for replay attack
-    if (isSignatureUsed(signature)) {
+    if (!skipReplayProtection && isSignatureUsed(signature)) {
       console.log("Replay attack detected");
 
       return {

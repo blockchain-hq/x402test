@@ -43,7 +43,8 @@ export const createRouteHandler = (
       recipient,
       BigInt(toAtomicUnits(routeConfig.price)),
       getUsdcMint(),
-      serverConfig.network || "localnet"
+      serverConfig.network || "localnet",
+      { skipReplayProtection: false }
     );
 
     if (!verification.isValid) {

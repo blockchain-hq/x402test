@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import { ServerConfig } from "./config.js";
 import { Connection, PublicKey } from "@solana/web3.js";
-import { logRequests, printServerInfo } from "./utils.js";
+import { getRpcUrl, logRequests, printServerInfo } from "./utils.js";
 import { createRouteHandler } from "./route-handler.js";
 import { getWallet } from "../lib/wallets.js";
 import { loadSignatures } from "../lib/replay-protection.js";
@@ -11,7 +11,7 @@ export const startServer = async (config: ServerConfig) => {
   loadSignatures();
 
   const app = express();
-  const connection = new Connection(config.rpcUrl || "http://localhost:8899");
+  const connection = new Connection(getRpcUrl(config));
   const recipient = new PublicKey(config.recipient);
 
   app.use(express.json());

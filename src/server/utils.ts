@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ServerConfig } from "./config.js";
-import { PublicKey } from "@solana/web3.js";
+import { clusterApiUrl, PublicKey } from "@solana/web3.js";
 
 export const logRequests = (
   req: Request,
@@ -34,4 +34,10 @@ export const printServerInfo = (config: ServerConfig, recipient: PublicKey) => {
 
 export const toAtomicUnits = (price: string): string => {
   return (parseFloat(price) * 1e6).toString();
+};
+
+export const getRpcUrl = (config: ServerConfig) => {
+  if (config.rpcUrl) return config.rpcUrl;
+  if (config.network === "localnet") return "http://localhost:8899";
+  return clusterApiUrl(config.network || "devnet");
 };
