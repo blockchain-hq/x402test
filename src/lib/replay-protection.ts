@@ -28,11 +28,11 @@ export const loadSignatures = (): void => {
         });
       }
 
-      console.log(
-        chalk.green(
-          `Loaded ${usedSignatures.size} used signatures from ${SIGNATURE_FILE}`
-        )
-      );
+      // console.debug(
+      //   chalk.gray(
+      //     `Loaded ${usedSignatures.size} used signatures from ${SIGNATURE_FILE}`
+      //   )
+      // );
     }
   } catch (error) {
     console.error(
@@ -78,11 +78,11 @@ export const markSignatureUsed = (
   usedSignatures.set(signature, record);
   saveSignatures();
 
-  console.log(
-    chalk.green(
-      `Marked signature used: ${signature} for ${endpoint} with amount ${amount}`
-    )
-  );
+  // console.debug(
+  //   chalk.gray(
+  //     `Marked signature used: ${signature} for ${endpoint} with amount ${amount}`
+  //   )
+  // );
 };
 
 export const getSignatureInfo = (
@@ -99,7 +99,7 @@ export const resetSignatures = () => {
     fs.unlinkSync(SIGNATURE_FILE);
   }
 
-  console.log(chalk.green("All signatures cleared"));
+  // console.debug(chalk.gray("All signatures cleared"));
 };
 
 export const getSignatureStats = () => {

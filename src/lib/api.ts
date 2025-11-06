@@ -163,6 +163,10 @@ export class X402Request {
 
       await this.checkExpectations(this.expectations, response);
 
+      console.log(chalk.green("Request executed successfully"));
+      console.log(chalk.green("Response:"));
+      console.log(JSON.stringify(response, null, 2));
+
       return response;
     } catch (err) {
       if (err instanceof X402Error || err instanceof AssertionError) {

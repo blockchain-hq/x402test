@@ -35,7 +35,10 @@ program
       --------------------------------------------------
       `)
     );
-    startCommand(options);
+
+    setTimeout(() => {
+      startCommand(options);
+    }, 800);
   });
 
 program

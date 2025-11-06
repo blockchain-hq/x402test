@@ -141,9 +141,6 @@ const findTokenTransfer = async (
 
     if (instructionType !== 3 && instructionType !== 12) continue;
 
-    console.log(`   Found token transfer (type ${instructionType})`);
-    console.log(`   Account indices:`, ix.accountKeyIndexes);
-
     const amount = ix.data.readBigUInt64LE(1).toString();
 
     let sourceIdx: number;
@@ -165,10 +162,6 @@ const findTokenTransfer = async (
     const mint =
       mintIdx != undefined ? accountKeys[mintIdx].toBase58() : undefined;
 
-    console.log(`   Source token account: ${source.toBase58()}`);
-    console.log(`   Dest token account: ${destination.toBase58()}`);
-    console.log(`   Mint: ${mint}`);
-
     let sourceOwner: string | undefined;
     let destinationOwner: string | undefined;
     const connection = getConnection();
@@ -176,7 +169,6 @@ const findTokenTransfer = async (
     try {
       const sourceAccount = await getAccount(connection, source);
       sourceOwner = sourceAccount.owner.toBase58();
-      console.log(`   Source owner: ${sourceOwner}`);
     } catch (err) {
       console.warn("Could not fetch source token account");
     }
@@ -184,7 +176,6 @@ const findTokenTransfer = async (
     try {
       const destAccount = await getAccount(connection, destination);
       destinationOwner = destAccount.owner.toBase58();
-      console.log(`   Destination owner: ${destinationOwner}`);
     } catch (err) {
       console.warn("Could not fetch destination token account");
     }

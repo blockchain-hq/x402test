@@ -1,5 +1,5 @@
 /**
- * Example 9: Weather Agent
+ * Example 1: Weather Agent
  *
  * An AI agent that autonomously purchases weather data
  * using x402 micropayments.

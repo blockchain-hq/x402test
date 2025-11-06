@@ -16,10 +16,11 @@ export const initCommand = async (options: InitOptions) => {
     process.exit(1);
   }
 
-  spinner.info("Creating new x402test config...");
-  spinner.info("Creating test wallet...");
+  spinner.start("Creating test wallet...");
   const wallet = await getWallet();
+  spinner.succeed("Test wallet created");
 
+  spinner.start("Creating new x402test config...");
   const config = `
 // x402test configuration
 export default {

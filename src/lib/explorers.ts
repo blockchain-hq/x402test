@@ -45,7 +45,11 @@ export const logExplorerLink = (
 ) => {
   const explorerUrl = getExplorerUrl(txSignature, explorer, cluster);
 
-  console.log(chalk.cyan(`signature: ${txSignature}`));
+  console.log(
+    chalk.cyan(
+      `signature: ${txSignature.slice(0, 20)}...${txSignature.slice(-20)}`
+    )
+  );
   console.log(chalk.blue(`Explorer link: ${explorerUrl}`));
   console.log("\n");
 };
