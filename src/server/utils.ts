@@ -17,7 +17,7 @@ export const logRequests = (
 export const printServerInfo = (config: ServerConfig, recipient: PublicKey) => {
   console.log("\n x402test Mock Server Started");
   console.log(`   Port: ${config.port}`);
-  console.log(`   Network: ${config.network || "solana-devnet"}`);
+  console.log(`   Network: ${config.network || "devnet"}`);
   console.log(`   Recipient: ${recipient.toBase58()}`);
   console.log("\n Configured Routes:");
 

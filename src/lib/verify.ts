@@ -2,6 +2,7 @@ import { PublicKey } from "@solana/web3.js";
 import { getConnection } from "./connection.js";
 import { getAccount, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { isSignatureUsed, markSignatureUsed } from "./replay-protection.js";
+import { Cluster, logExplorerLink } from "./explorers.js";
 
 export interface VerificationResult {
   isValid: boolean;
@@ -16,7 +17,8 @@ export const verifyPayment = async (
   signature: string,
   expectedRecipient: PublicKey,
   expectedAmount: bigint,
-  expectedMint: PublicKey
+  expectedMint: PublicKey,
+  cluster: Cluster
 ): Promise<VerificationResult> => {
   try {
     const connection = getConnection();
@@ -98,6 +100,8 @@ export const verifyPayment = async (
     }
 
     markSignatureUsed(signature, "payment-verification", transfer.amount);
+
+    logExplorerLink(signature, "solana-explorer", cluster);
 
     return {
       isValid: true,

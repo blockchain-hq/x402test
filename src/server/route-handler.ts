@@ -42,7 +42,8 @@ export const createRouteHandler = (
       payment.payload.signature,
       recipient,
       BigInt(toAtomicUnits(routeConfig.price)),
-      getUsdcMint()
+      getUsdcMint(),
+      serverConfig.network || "localnet"
     );
 
     if (!verification.isValid) {
@@ -62,7 +63,7 @@ export const createRouteHandler = (
         success: true,
         error: null,
         txHash: verification.txHash,
-        networkId: serverConfig.network || "solana-localnet",
+        networkId: serverConfig.network || "localnet",
       })
     ).toString("base64");
 

@@ -2,6 +2,7 @@ import { Request } from "express";
 import path from "path";
 import fs from "fs";
 import { pathToFileURL } from "url";
+import { Cluster } from "../lib/explorers.js";
 
 export interface RouteConfig {
   price: string;
@@ -13,7 +14,7 @@ export interface RouteConfig {
 export interface ServerConfig {
   port: number;
   recipient: string;
-  network?: string;
+  network?: Cluster;
   rpcUrl?: string;
   routes: Record<string, RouteConfig>;
 }
@@ -41,6 +42,6 @@ export const loadConfig = async (configPath: string): Promise<ServerConfig> => {
 
 export const defaultConfig: Partial<ServerConfig> = {
   port: 4402,
-  network: "solana-localnet",
+  network: "localnet",
   rpcUrl: "http://localhost:8899",
 };

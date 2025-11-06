@@ -24,7 +24,7 @@ export const initCommand = async (options: InitOptions) => {
 // x402test configuration
 export default {
   port: 4402,
-  network: 'solana-devnet',
+  network: 'devnet',
   rpcUrl: 'http://localhost:8899',
   
   recipient: '${wallet.publicKey.toBase58()}',

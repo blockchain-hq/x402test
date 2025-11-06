@@ -5,6 +5,7 @@ import { createPayment, createXPaymentHeader } from "./payment.js";
 import { verifyPayment } from "./verify.js";
 import { getWallet } from "./wallets.js";
 import chalk from "chalk";
+import { Cluster, logExplorerLink } from "./explorers.js";
 
 export interface X402RequestConfig {
   amount?: string;
@@ -36,6 +37,7 @@ export class X402Request {
   private requestBody: unknown;
   private paymentAmount?: string;
   private expectations: Expectation[] = [];
+  private cluster: Cluster = "localnet";
 
   constructor(url: string) {
     this.url = url;
@@ -160,6 +162,7 @@ export class X402Request {
       }
 
       await this.checkExpectations(this.expectations, response);
+
       return response;
     } catch (err) {
       if (err instanceof X402Error || err instanceof AssertionError) {
@@ -175,6 +178,10 @@ export class X402Request {
     res: X402Response<T>
   ): Promise<X402Response<T>> {
     const requirements = parse402Response(res.body);
+
+    if (requirements.network) {
+      this.cluster = requirements.network as Cluster;
+    }
 
     if (this.paymentAmount) {
       const clientMaxAmount = parseFloat(this.paymentAmount) * 10 ** 6;
@@ -241,7 +248,8 @@ export class X402Request {
           res.payment.signature,
           new PublicKey(res.payment.to),
           BigInt(res.payment.amount),
-          wallet.usdcMint
+          wallet.usdcMint,
+          this.cluster
         );
 
         if (!verification.isValid) {
